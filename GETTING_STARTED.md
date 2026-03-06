@@ -38,6 +38,16 @@
 
 6. **Create a superuser:**
 
+   **Option 1 - Automated (Recommended):**
+   ```bash
+   python create_superuser.py
+   ```
+   This creates a superuser with:
+   - Username: `superadmin`
+   - Password: `admin123`
+   - Email: `superadmin@bugapp.com`
+
+   **Option 2 - Interactive:**
    ```bash
    python manage.py createsuperuser
    ```
@@ -48,7 +58,9 @@
    python manage.py runserver
    ```
 
-   The API will be available at `http://localhost:8000`
+   The API will be available at `http://localhost:8000/api/`
+   
+   **Django Admin:** `http://localhost:8000/admin/`
 
 ## Frontend Setup (React)
 
@@ -106,6 +118,65 @@
 1. Open a ticket
 2. Use the status dropdown to change ticket status
 3. Available statuses: Open → In Progress → Fixed → Closed/Reopened
+
+### Using Django Admin Interface
+
+The Django Admin interface provides powerful management capabilities:
+
+1. **Access Django Admin:**
+   - URL: `http://localhost:8000/admin/`
+   - Login with superadmin credentials
+
+2. **Available Admin Panels:**
+   - **Authentication and Authorization** - Manage Django users and groups
+   - **User Profiles** - Manage user roles (Admin, Chef, Developer), departments, contact info
+   - **Tickets** - View, edit, and filter all tickets by status, priority, severity
+   - **Comments** - Moderate comments on tickets
+   - **Comment Mentions** - Track user mentions in comments
+
+3. **Features:**
+   - Advanced filtering and search
+   - Bulk actions
+   - Direct database editing (use with caution)
+   - View related objects
+   - Customized list displays with relevant information
+
+4. **Best Practices:**
+   - Use the frontend interface for regular operations
+   - Use Django Admin for:
+     - User management and role assignment
+     - System-level troubleshooting
+     - Bulk operations
+     - Data analysis and reporting
+
+## Access Points
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:3000 | Main user interface |
+| **Backend API** | http://localhost:8000/api/ | REST API endpoints |
+| **Django Admin** | http://localhost:8000/admin/ | Admin interface |
+
+---
+
+## Troubleshooting
+
+### Connection Issues
+- Ensure backend is running on port 8000
+- Check frontend `.env` file: `REACT_APP_API_URL=http://localhost:8000/api`
+- Restart frontend after changing `.env`
+
+### Admin Login Problems
+- Run `python create_superuser.py` to ensure superuser exists
+- Or reset password: `python manage.py changepassword admin`
+
+### Missing Dependencies
+- If you see module errors, install dependencies:
+  ```bash
+  pip install python-decouple Django==4.2.8 djangorestframework==3.14.0
+  ```
+
+---
 
 ## API Documentation
 

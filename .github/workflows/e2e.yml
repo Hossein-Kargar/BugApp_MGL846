@@ -7,9 +7,6 @@ jobs:
   playwright:
     runs-on: ubuntu-latest
     env:
-      DJANGO_SUPERUSER_USERNAME: ${{ secrets.E2E_USERNAME }}
-      DJANGO_SUPERUSER_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-      DJANGO_SUPERUSER_EMAIL: e2e@example.com
       E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
       E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
       PLAYWRIGHT_PORT: "3000"
@@ -29,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python manage.py migrate
-          python manage.py createsuperuser --noinput || true
+          python manage.py shell -c "from django.contrib.auth import get_user_model; import os; U=get_user_model(); u, _ = U.objects.get_or_create(username=os.environ['E2E_USERNAME'], defaults={'email': 'e2e@example.com'}); u.set_password(os.environ['E2E_PASSWORD']); u.is_staff=False; u.is_superuser=False; u.save()"
 
       - name: Start backend
         working-directory: backend

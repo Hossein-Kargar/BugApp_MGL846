@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python manage.py migrate
-          python manage.py shell -c "from django.contrib.auth import get_user_model; import os; U=get_user_model(); u, _ = U.objects.get_or_create(username=os.environ['E2E_USERNAME'], defaults={'email': 'e2e@example.com'}); u.set_password(os.environ['E2E_PASSWORD']); u.is_staff=False; u.is_superuser=False; u.save()"
+          python manage.py shell -c "from django.contrib.auth import get_user_model; from users.models import UserProfile; import os; U=get_user_model(); u, _ = U.objects.get_or_create(username=os.environ['E2E_USERNAME'], defaults={'email': 'e2e@example.com'}); u.set_password(os.environ['E2E_PASSWORD']); u.is_staff=False; u.is_superuser=False; u.is_active=True; u.save(); profile, _ = UserProfile.objects.get_or_create(user=u, defaults={'role': 'developer', 'is_active': True}); profile.is_active = True; profile.save()"
 
       - name: Start backend
         working-directory: backend

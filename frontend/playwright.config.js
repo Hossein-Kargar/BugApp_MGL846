@@ -9,6 +9,7 @@ if (fs.existsSync(dotenvPath)) {
 
 const port = process.env.PLAYWRIGHT_PORT || process.env.PORT || 3000;
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${port}`;
+const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -26,7 +27,7 @@ module.exports = defineConfig({
     },
   },
   webServer: {
-    command: 'npm.cmd start',
+    command: `${npmCmd} start`,
     cwd: __dirname,
     url: baseURL,
     env: {

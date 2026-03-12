@@ -22,7 +22,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const token = localStorage.getItem('token');
+    const status = error.response?.status;
+    const path = window.location.pathname;
+
+    if (status === 401 && token && !['/login', '/register'].includes(path)) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

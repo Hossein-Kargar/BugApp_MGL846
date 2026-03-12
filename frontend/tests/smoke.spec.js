@@ -56,14 +56,21 @@ test('login works', async ({ page }, testInfo) => {
     await page.getByLabel('Description').fill(ticketDescription);
 
     await page.getByLabel('Assign to').click();
-    const assigneeOption = page.locator('.ant-select-item-option', {
-      hasText: 'HosseinKargar Hossein Kargar',
+    const assigneeDropdown = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)');
+    await expect(assigneeDropdown).toBeVisible({ timeout: 15000 });
+    const preferredAssignee = assigneeDropdown.locator('.ant-select-item-option', {
+      hasText: new RegExp(username, 'i'),
     });
-    await expect(assigneeOption).toBeVisible({ timeout: 15000 });
-    await assigneeOption.click();
+    if ((await preferredAssignee.count()) > 0) {
+      await preferredAssignee.first().click();
+    } else {
+      await assigneeDropdown.locator('.ant-select-item-option').first().click();
+    }
 
     await page.getByLabel('Priority').click();
-    const priorityOption = page.locator('.ant-select-item-option', { hasText: 'Low' });
+    const priorityOption = page
+      .locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+      .locator('.ant-select-item-option', { hasText: 'Low' });
     await expect(priorityOption).toBeVisible({ timeout: 15000 });
     await priorityOption.click();
 

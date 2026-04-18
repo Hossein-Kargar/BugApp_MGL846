@@ -21,13 +21,21 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "eject": "react-scripts eject"
-  },
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  
+  "test:e2e": "playwright test",
+  "test:e2e:ui": "playwright test --ui",
+  
+  "test:smoke": "playwright test tests/smoke/smoke.spec.js",
+  "test:smoke:ui": "playwright test tests/smoke/smoke.spec.js --ui",
+  "test:smoke:debug": "playwright test tests/smoke/smoke.spec.js --debug",
+  "test:smoke:headed": "playwright test tests/smoke --headed",
+  "test:report": "playwright show-report",
+  
+  "eject": "react-scripts eject"
+},
   "eslintConfig": {
     "extends": [
       "react-app"

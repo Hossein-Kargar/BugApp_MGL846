@@ -1,15 +1,50 @@
-name: e2e
+name: ci
 
 on:
   push:
 
 jobs:
-  playwright:
+  backend-tests:
+    name: Backend (pytest + coverage)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install backend deps
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # pytest-cov n'est pas dans requirements.txt, on l'installe ici
+          pip install pytest-cov pytest-django
+
+      - name: Run pytest with coverage
+        working-directory: backend
+        run: |
+          pytest --cov=tickets --cov-report=term --cov-report=xml --cov-report=html
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            backend/coverage.xml
+            backend/htmlcov/
+
+  e2e:
+    name: E2E (Playwright)
     runs-on: ubuntu-latest
     env:
       E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
       E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-      PLAYWRIGHT_PORT: "3000"
       REACT_APP_API_URL: "http://127.0.0.1:8000/api"
       CI: "1"
     steps:
@@ -19,24 +54,69 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
 
       - name: Install backend deps
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python manage.py migrate
-          python manage.py shell -c "from django.contrib.auth import get_user_model; from users.models import UserProfile; import os; U=get_user_model(); u, _ = U.objects.get_or_create(username=os.environ['E2E_USERNAME'], defaults={'email': 'e2e@example.com'}); u.set_password(os.environ['E2E_PASSWORD']); u.is_staff=False; u.is_superuser=False; u.is_active=True; u.save(); profile, _ = UserProfile.objects.get_or_create(user=u, defaults={'role': 'developer', 'is_active': True}); profile.is_active = True; profile.save()"
 
-      - name: Start backend
+      - name: Apply migrations and seed E2E user
         working-directory: backend
         run: |
-          python manage.py runserver 0.0.0.0:8000 &
+          python manage.py migrate
+          python manage.py shell -c "
+          from django.contrib.auth import get_user_model
+          from users.models import UserProfile
+          import os
+          U = get_user_model()
+          u, _ = U.objects.get_or_create(
+              username=os.environ['E2E_USERNAME'],
+              defaults={'email': 'e2e@example.com'}
+          )
+          u.set_password(os.environ['E2E_PASSWORD'])
+          u.is_staff = False
+          u.is_superuser = False
+          u.is_active = True
+          u.save()
+          profile, _ = UserProfile.objects.get_or_create(
+              user=u, defaults={'role': 'developer', 'is_active': True}
+          )
+          profile.is_active = True
+          profile.save()
+          "
+
+      - name: Start backend (Django runserver)
+        working-directory: backend
+        run: |
+          nohup python manage.py runserver 0.0.0.0:8000 > backend.log 2>&1 &
+          echo $! > backend.pid
+          echo "Backend PID: $(cat backend.pid)"
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend on http://127.0.0.1:8000 ..."
+          for i in {1..30}; do
+            if curl -sf http://127.0.0.1:8000/api/ -o /dev/null 2>&1 \
+               || curl -sf http://127.0.0.1:8000/admin/ -o /dev/null 2>&1; then
+              echo "Backend is up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Backend did not start in 30s"
+          echo "=== backend.log ==="
+          cat backend/backend.log || true
+          exit 1
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend deps
         working-directory: frontend
@@ -44,17 +124,19 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: frontend
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
-      - name: Run E2E
+      - name: Run E2E tests
         working-directory: frontend
         run: npm run test:e2e
 
-      - name: Upload Playwright artifacts
+      - name: Upload Playwright artifacts on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-artifacts
           path: |
-            frontend/test-results
-            frontend/playwright-report
+            frontend/test-results/
+            frontend/playwright-report/
+            backend/backend.log
+          retention-days: 7

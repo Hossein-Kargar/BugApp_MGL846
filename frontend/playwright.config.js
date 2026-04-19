@@ -1,45 +1,40 @@
-const { defineConfig, devices } = require('@playwright/test');
-const fs = require('fs');
-const path = require('path');
+import { defineConfig, devices } from '@playwright/test';
 
-const dotenvPath = path.join(__dirname, '.env.e2e');
-if (fs.existsSync(dotenvPath)) {
-  require('dotenv').config({ path: dotenvPath });
-}
-
-const port = process.env.PLAYWRIGHT_PORT || process.env.PORT || 3000;
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${port}`;
-const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-
-module.exports = defineConfig({
-  testDir: './tests',
-  timeout: 30 * 1000,
-  expect: {
-    timeout: 5 * 1000,
-  },
-  fullyParallel: true,
-  reporter: [['html', { open: 'never' }]],
+export default defineConfig({
+  testDir: './tests',           // ← Cherche dans tests/
+  testMatch: '**/*.spec.js',    // ← Cherche les fichiers *.spec.js
+  
+  fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: 1,
+  
+  reporter: [
+    ['html', { outputFolder: 'playwright-report' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+  ],
+  
   use: {
-    baseURL,
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
-    launchOptions: {
-      slowMo: 300,
-    },
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
-  webServer: {
-    command: `${npmCmd} start`,
-    cwd: __dirname,
-    url: baseURL,
-    env: {
-      ...process.env,
-      PORT: String(port),
-    },
-    reuseExistingServer: !process.env.CI,
-  },
+
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+
+  webServer: {
+    command: 'npm start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
+
+  timeout: 30000,
+  expect: { timeout: 5000 },
 });

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perform_update Code</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: white;
+            padding: 40px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        pre {
+            background: white;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        code {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+        .hljs {
+            background: white;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <pre><code class="language-python">def perform_update(self, serializer):                              # Nœud 1
+    assigned_to_id = self.request.data.get("assigned_to") or \
+                     self.request.data.get("assigned_to_id")       # Nœud 2
+    mentioned_user_ids = self.request.data.get("mentioned_users", [])  # Nœud 3
+    
+    # Sauvegarde conditionnelle
+    ticket = (
+        serializer.save(assigned_to_id=assigned_to_id)             # Décision 1 ➜ CC+1
+        if assigned_to_id
+        else serializer.save()
+    )                                                               # Nœud 4
+    
+    ticket_link = f"/tickets/{ticket.id}"                           # Nœud 5
+    
+    # Récupération des mentions existantes
+    mentioned_users = set([m.mentioned_user for m in ticket.mentions.all()])  # Nœud 6
+    
+    # Ajout de nouvelles mentions
+    if mentioned_user_ids:                                          # Décision 2 ➜ CC+1
+        for uid in mentioned_user_ids:                              # Décision 3 ➜ CC+1
+            try:                                                    # Décision 4 ➜ CC+1
+                user = User.objects.get(id=uid)                     # Nœud 7
+                mentioned_users.add(user)                           # Nœud 8
+            except User.DoesNotExist:                               # Nœud 9
+                pass                                                # Nœud 10
+    
+    # Notification de tous les utilisateurs mentionnés
+    for user in mentioned_users:                                    # Décision 5 ➜ CC+1
+        if user != self.request.user:                               # Décision 6 ➜ CC+1
+            notify_user(user.id, ...)                               # Nœud 11
+    
+    # Notification de l'utilisateur assigné
+    if assigned_to_id:                                              # Décision 7 ➜ CC+1
+        try:                                                        # Décision 8 ➜ CC+1
+            assigned_user = User.objects.get(id=assigned_to_id)     # Nœud 12
+            if assigned_user != self.request.user:                  # Décision 9 ➜ CC+1
+                notify_user(assigned_user.id, ...)                  # Nœud 13
+        except User.DoesNotExist:                                   # Décision 10 ➜ CC+1
+            pass                                                    # Nœud 14
+    # Nœud 15 (Sortie)</code></pre>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+﻿                <td data-ratio="0 19">0%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_dcf6e72409868b36_views_py.html#t96">tickets&#8201;\&#8201;views.py</a></td>
+                <td class="name"><a href="z_dcf6e72409868b36_views_py.html#t96"><data value='perform_update'>TicketUpdateView.perform_update</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td>22</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="22 22">100%</td>
+            </tr>

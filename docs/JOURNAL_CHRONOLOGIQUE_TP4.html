@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journal chronologique des activites de test - TP4</title>
+  <link rel="stylesheet" href="pdf-style.css">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --panel: #f8fafc;
+      --line: #cbd5e1;
+      --head: #dbe7f3;
+      --a: #dbeafe;
+      --i: #fef3c7;
+      --e: #dcfce7;
+      --s: #fde2e2;
+      --d: #ede9fe;
+      --none: #f8fafc;
+    }
+
+    body {
+      margin: 0 auto;
+      max-width: 1120px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: -0.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 1rem 0 1.2rem;
+    }
+
+    .meta-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .meta-card strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .legend-table th,
+    .legend-table td,
+    .timeline th,
+    .timeline td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .legend-table th:first-child,
+    .legend-table td:first-child,
+    .timeline th:first-child,
+    .timeline td.activity {
+      text-align: left;
+    }
+
+    .timeline th {
+      background: var(--head);
+      font-size: 9.5pt;
+    }
+
+    .timeline td.activity {
+      font-weight: 600;
+      width: 29%;
+      background: #fff;
+    }
+
+    .timeline td.day {
+      min-width: 44px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .tag-a { background: var(--a); color: #1d4ed8; }
+    .tag-i { background: var(--i); color: #92400e; }
+    .tag-e { background: var(--e); color: #166534; }
+    .tag-s { background: var(--s); color: #b91c1c; }
+    .tag-d { background: var(--d); color: #6d28d9; }
+    .tag-mix { background: linear-gradient(135deg, var(--a), var(--e)); color: #0f172a; }
+    .tag-none { background: var(--none); color: #94a3b8; }
+
+    .section-note {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+
+    .section-note p:last-child {
+      margin-bottom: 0;
+    }
+
+    .footnote {
+      color: var(--muted);
+      font-size: 9.5pt;
+    }
+
+    @media print {
+      .meta {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Projet BugApp</h1>
+  <p class="subtitle">Journal chronologique des activites de test - TP4</p>
+
+  <section class="meta">
+    <div class="meta-card">
+      <strong>Periode couverte</strong>
+      <span>Mars-avril 2026</span>
+    </div>
+    <div class="meta-card">
+      <strong>Source principale</strong>
+      <span>Historique Git du projet et repartition des taches de l'equipe</span>
+    </div>
+  </section>
+
+  <h2>Legende</h2>
+  <table class="legend-table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Signification</th>
+        <th>Lecture</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="day tag-a">A</td>
+        <td>Analyse / preparation</td>
+        <td>Definition de l'activite, cadrage, mise en place initiale</td>
+      </tr>
+      <tr>
+        <td class="day tag-i">I</td>
+        <td>Implementation</td>
+        <td>Creation des tests, scripts ou configurations</td>
+      </tr>
+      <tr>
+        <td class="day tag-e">E</td>
+        <td>Execution</td>
+        <td>Lancement des tests et observation des resultats</td>
+      </tr>
+      <tr>
+        <td class="day tag-s">S</td>
+        <td>Stabilisation / correction</td>
+        <td>Ajustements apres echec, debogage ou fiabilisation</td>
+      </tr>
+      <tr>
+        <td class="day tag-d">D</td>
+        <td>Documentation / synthese</td>
+        <td>Production des preuves, analyses et consignes</td>
+      </tr>
+      <tr>
+        <td class="day tag-none">.</td>
+        <td>Aucune trace retenue</td>
+        <td>Aucun evenement explicite releve pour cette date</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Mars 2026</h2>
+  <table class="timeline">
+    <thead>
+      <tr>
+        <th>Activite</th>
+        <th>06</th>
+        <th>12</th>
+        <th>15</th>
+        <th>16</th>
+        <th>17</th>
+        <th>18</th>
+        <th>26</th>
+        <th>27</th>
+        <th>29</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="activity">CI/CD et preparation Playwright</td>
+        <td class="day tag-a">A</td>
+        <td class="day tag-i">I</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Smoke tests frontend Playwright</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-a">A</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-s">S</td>
+        <td class="day tag-mix">I/E</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Configuration pytest / pytest-cov</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">A/I</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests smoke backend USERS</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">I/E</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests smoke backend TICKETS</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">I/E</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests smoke backend COMMENTS</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">I/E</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests smoke backend globaux</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">I/E</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Nettoyage pycache / artefacts Python</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-a">A</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-s">S</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests boite noire AUTH / USERS</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests boite blanche unite critique</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Documentation white-box / diagrammes</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Avril 2026</h2>
+  <table class="timeline">
+    <thead>
+      <tr>
+        <th>Activite</th>
+        <th>18</th>
+        <th>19</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="activity">Validation pipeline GitHub Actions</td>
+        <td class="day tag-s">S</td>
+        <td class="day tag-none">.</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests boite blanche unite critique</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-mix">A/I/E</td>
+      </tr>
+      <tr>
+        <td class="activity">Documentation white-box / diagrammes</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-d">D</td>
+      </tr>
+      <tr>
+        <td class="activity">Mise a jour README / instructions de test</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-d">D</td>
+      </tr>
+      <tr>
+        <td class="activity">Assemblage des preuves techniques TP4</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-d">D</td>
+      </tr>
+      <tr>
+        <td class="activity">Tests boite noire AUTH / USERS</td>
+        <td class="day tag-none">.</td>
+        <td class="day tag-none">.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Notes d'interpretation</h2>
+  <div class="section-note">
+    <p>Ce journal a ete reconstruit a partir des traces Git du projet et complete par la repartition des taches de l'equipe. Les activites de smoke tests backend, de pipeline CI/CD, de smoke tests frontend et de tests boite blanche sont directement appuyees par les commits observes entre le 6 mars 2026 et le 19 avril 2026.</p>
+    <p>Les dates exactes des tests boite noire AUTH / USERS doivent etre confirmees avec la personne responsable, car elles n'apparaissent pas explicitement dans les commits analyses sur la periode retenue.</p>
+  </div>
+</body>
+</html>

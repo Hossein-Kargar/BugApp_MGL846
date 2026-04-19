@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trace d'execution technique - TP4</title>
+  <link rel="stylesheet" href="pdf-style.css">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --panel: #f8fafc;
+      --line: #cbd5e1;
+      --accent: #dbeafe;
+      --ok: #dcfce7;
+      --warn: #fef3c7;
+    }
+
+    body {
+      margin: 0 auto;
+      max-width: 980px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: -0.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1rem 0 1.2rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .metric {
+      font-size: 18pt;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .metric-note {
+      color: var(--muted);
+      font-size: 9.5pt;
+      margin-top: 6px;
+    }
+
+    .command-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid #1e293b;
+      margin: 10px 0 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10pt;
+    }
+
+    .results-table th,
+    .results-table td {
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .results-table td.num,
+    .results-table th.num {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .badge-ok {
+      background: var(--ok);
+      color: #166534;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .badge-warn {
+      background: var(--warn);
+      color: #92400e;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .note-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .note-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    @media print {
+      .summary {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Projet BugApp</h1>
+  <p class="subtitle">Trace d'execution technique - TP4</p>
+
+  <p>Ce document sert d'annexe technique pour illustrer l'execution des tests lies au livrable 4, en particulier les tests de boite blanche sur l'unite critique <code>TicketUpdateView.perform_update()</code>.</p>
+
+  <div class="summary">
+    <div class="card">
+      <strong>Module cible</strong>
+      <p class="metric">tickets/views.py</p>
+      <p class="metric-note">Contient l'unite critique analysee</p>
+    </div>
+    <div class="card">
+      <strong>Fichier de test</strong>
+      <p class="metric">test_white_box.py</p>
+      <p class="metric-note">Suite de tests de boite blanche</p>
+    </div>
+    <div class="card">
+      <strong>Couverture observee</strong>
+      <p class="metric">69%</p>
+      <p class="metric-note">Pour <code>tickets/views.py</code> dans l'execution ciblee</p>
+    </div>
+  </div>
+
+  <h2>Unite critique ciblee</h2>
+  <ul>
+    <li>Module cible : <code>tickets/views.py</code></li>
+    <li>Unite analysee : <code>TicketUpdateView.perform_update()</code></li>
+    <li>Fichier de test associe : <code>backend/tickets/tests/test_white_box.py</code></li>
+  </ul>
+
+  <h2>Commande d'execution</h2>
+  <p>Commande utilisee pour l'analyse de couverture de l'unite critique :</p>
+  <div class="command-box">pytest tickets/tests/test_white_box.py --cov=tickets.views --cov-report=term-missing</div>
+
+  <h2>Resultats observes</h2>
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Element</th>
+        <th class="num">Instructions</th>
+        <th class="num">Manquantes</th>
+        <th class="num">Couverture</th>
+        <th>Lecture</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tickets/tests/test_white_box.py</code></td>
+        <td class="num">71</td>
+        <td class="num">0</td>
+        <td class="num"><span class="badge-ok">100%</span></td>
+        <td>Couverture complete du code de test</td>
+      </tr>
+      <tr>
+        <td><code>tickets/views.py</code></td>
+        <td class="num">96</td>
+        <td class="num">30</td>
+        <td class="num"><span class="badge-warn">69%</span></td>
+        <td>Couverture observee sur le module contenant l'unite critique</td>
+      </tr>
+      <tr>
+        <td><strong>Total rapporte</strong></td>
+        <td class="num">261</td>
+        <td class="num">44</td>
+        <td class="num"><span class="badge-ok">83%</span></td>
+        <td>Couverture totale du sous-ensemble <code>tickets</code> rapporte</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Interpretation</h2>
+  <ul>
+    <li>Le fichier de test de boite blanche atteint une couverture de <strong>100%</strong> sur son propre code de test.</li>
+    <li>Le module <code>tickets/views.py</code>, qui contient l'unite critique analysee, atteint une couverture de <strong>69%</strong> dans cette execution ciblee.</li>
+    <li>La couverture totale observee sur l'ensemble rapporte pour le sous-ensemble <code>tickets</code> est de <strong>83%</strong>.</li>
+  </ul>
+
+  <h2>Source de la preuve</h2>
+  <p>La sortie brute de couverture est conservee dans le fichier <code>backend/coverage_terminal.txt</code>.</p>
+
+  <div class="note-box">
+    <p>Cette trace a ete preparee comme preuve technique d'execution pour accompagner les resultats presentes dans le livrable 4.</p>
+  </div>
+</body>
+</html>

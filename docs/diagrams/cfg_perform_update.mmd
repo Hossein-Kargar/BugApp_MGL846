@@ -1,0 +1,54 @@
+graph TD
+    A[Entree: perform_update] --> B[Recuperer assigned_to_id]
+    B --> C[Recuperer mentioned_user_ids]
+    C --> D{assigned_to_id existe?}
+
+    D -->|Oui| E[Save avec assigned_to_id]
+    D -->|Non| F[Save sans assigned_to_id]
+    E --> G[Creer ticket_link]
+    F --> G
+
+    G --> H[Recuperer mentions existantes via ticket.mentions.all]
+    H --> I[Creer set mentioned_users]
+
+    I --> J{mentioned_user_ids non vide?}
+    J -->|Oui| K[For each uid]
+    J -->|Non| P[For each mentioned_user]
+
+    K --> L[Try: Get User uid]
+    L --> M{User trouve?}
+    M -->|Oui| N[Ajouter a mentioned_users]
+    M -->|Non: DoesNotExist| O{Plus d uids?}
+    N --> O
+
+    O -->|Oui| K
+    O -->|Non| P
+
+    P --> Q{User != createur?}
+    Q -->|Oui| R[Notifier: Ticket updated]
+    Q -->|Non| S{Plus de mentioned_users?}
+    R --> S
+
+    S -->|Oui| P
+    S -->|Non| T{assigned_to_id existe?}
+
+    T -->|Oui| U[Try: Get assigned_user]
+    T -->|Non| Z[Sortie]
+
+    U --> V{User trouve?}
+    V -->|Oui| W{User != createur?}
+    V -->|Non: DoesNotExist| Z
+
+    W -->|Oui| X[Notifier: Assigned]
+    W -->|Non| Z
+    X --> Z
+
+    style D fill:#ffcccc
+    style J fill:#ffcccc
+    style M fill:#ffcccc
+    style O fill:#ffcccc
+    style Q fill:#ffcccc
+    style S fill:#ffcccc
+    style T fill:#ffcccc
+    style V fill:#ffcccc
+    style W fill:#ffcccc

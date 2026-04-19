@@ -28,6 +28,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 ### Key Components
 
 **Backend (Django):**
+
 - `backend/users/admin.py` - User profile management in Django Admin
 - `backend/tickets/admin.py` - Ticket management with advanced filters
 - `backend/comments/admin.py` - Comment and mention moderation
@@ -36,6 +37,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 - REST API with Token-based authentication
 
 **Frontend (React):**
+
 - Modern UI with Ant Design components
 - Role-based dashboards
 - Real-time notifications
@@ -72,32 +74,38 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
    python manage.py migrate
    ```
 5. **Install Python dependencies:**
+
    ```sh
    pip install python-decouple Django==4.2.8 djangorestframework==3.14.0 django-cors-headers==4.3.1 django-filter==24.1 Pillow==10.1.0
    ```
 
 6. **Create a superuser for admin access:**
-   
+
    **Option 1 - Using automated script:**
+
    ```sh
    python create_superuser.py
    ```
+
    This creates a superuser with:
    - Username: `superadmin`
    - Password: `admin123`
    - Email: `superadmin@bugapp.com`
-   
+
    **Option 2 - Manual creation:**
+
    ```sh
    python manage.py createsuperuser
    ```
 
 7. **Run the backend server:**
+
    ```sh
    python manage.py runserver
    ```
+
    The backend API will be available at `http://localhost:8000/api/`
-   
+
    **Django Admin interface:** `http://localhost:8000/admin/`
 
 ---
@@ -130,7 +138,6 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   - The file `frontend/.env` is configured with: `REACT_APP_API_URL=http://localhost:8000/api`
   - ⚠️ **Important:** The API URL must point to port **8000** (Django default port)
   - If you need to change it, edit `frontend/.env`
-  
 - **Backend:**
   - Edit `backend/.env` for Django settings (optional)
   - Uses `python-decouple` for environment configuration
@@ -140,6 +147,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 ## Features
 
 ### Frontend (React)
+
 - User authentication (register/login)
 - Role-based access (Admin, Chef, Developer)
 - Ticket creation, assignment, and status management
@@ -148,6 +156,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 - Responsive, modern UI with Ant Design
 
 ### Backend (Django)
+
 - RESTful API with Django REST Framework
 - User authentication with Token-based auth
 - Role-based permissions (Admin, Chef, Developer)
@@ -158,6 +167,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   - User mention tracking
 
 ### Django Admin Features
+
 - **User Profiles:** Manage users, roles, departments, and contact info
 - **Tickets:** View/edit all tickets with filters by status, priority, severity
 - **Comments:** Moderate comments with search and filtering
@@ -168,6 +178,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 ## Useful Commands
 
 ### Backend (Django)
+
 - **Run development server:**
   ```sh
   python manage.py runserver
@@ -200,6 +211,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   ```
 
 ### Frontend (React)
+
 - **Start development server:**
   ```sh
   npm start
@@ -213,17 +225,50 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   npm run build
   ```
 
+## Testing
+
+### Backend test suites
+
+Run the backend tests from the `backend/` directory:
+
+```sh
+pytest
+```
+
+Run only the white-box tests for the critical unit:
+
+```sh
+pytest tickets/tests/test_white_box.py -v
+```
+
+Generate coverage for the white-box target:
+
+```sh
+pytest tickets/tests/test_white_box.py --cov=tickets.views --cov-report=term-missing
+```
+
+### Frontend smoke tests
+
+Run the frontend smoke tests from the `frontend/` directory:
+
+```sh
+npm run test:smoke
+```
+
+The frontend smoke suite expects the application to be available on `http://localhost:3000`. Start the backend on `http://localhost:8000` before running frontend smoke tests so the UI can reach the API.
+
 ---
 
 ## Accessing the Application
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Frontend** | http://localhost:3000 | Main user interface |
-| **Backend API** | http://localhost:8000/api/ | REST API endpoints |
-| **Django Admin** | http://localhost:8000/admin/ | Admin interface |
+| Service          | URL                          | Description         |
+| ---------------- | ---------------------------- | ------------------- |
+| **Frontend**     | http://localhost:3000        | Main user interface |
+| **Backend API**  | http://localhost:8000/api/   | REST API endpoints  |
+| **Django Admin** | http://localhost:8000/admin/ | Admin interface     |
 
 ### Admin Credentials
+
 - **Username:** `superadmin`
 - **Password:** `admin123`
 - **Email:** `superadmin@bugapp.com`
@@ -233,6 +278,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 ## Troubleshooting
 
 ### Connection Refused Errors
+
 - ✅ **Fixed:** Frontend now correctly connects to backend on port **8000**
 - If you see `ERR_CONNECTION_REFUSED`, ensure:
   - Backend is running: `python manage.py runserver`
@@ -240,6 +286,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   - After changing `.env`, restart the frontend server
 
 ### Admin Login Issues
+
 - If you can't login to Django Admin, run:
   ```sh
   python create_superuser.py
@@ -250,16 +297,19 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
   ```
 
 ### Missing Dependencies
+
 - If you see `ModuleNotFoundError: No module named 'decouple'`:
   ```sh
   pip install python-decouple
   ```
 
 ### CORS Issues
+
 - Check allowed origins in `backend/bugapp/settings.py`
 - Ensure `django-cors-headers` is installed
 
 ### Port Conflicts
+
 - If ports are in use, change them in the start commands or `.env` files
 
 ---
@@ -267,6 +317,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 ## Technology Stack
 
 ### Backend
+
 - **Framework:** Django 4.2.8
 - **API:** Django REST Framework 3.14.0
 - **Authentication:** Token-based auth
@@ -275,6 +326,7 @@ A full-stack bug management system inspired by Jira, built with Django (backend)
 - **Image handling:** Pillow
 
 ### Frontend
+
 - **Framework:** React 18.2.0
 - **UI Library:** Ant Design 5.11.0
 - **Routing:** React Router 6.20.0

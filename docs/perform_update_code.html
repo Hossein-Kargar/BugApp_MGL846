@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perform_update Code Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+        .code-wrapper {
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #e0e0e0;
+        }
+        code {
+            background: none;
+            color: #e0e0e0;
+            padding: 0;
+            border: none;
+        }
+        .hljs {
+            background: #1e1e1e;
+        }
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .legend-icon.node {
+            background: #3b82f6;
+        }
+        .legend-icon.decision {
+            background: #ef4444;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+        .legend-text {
+            font-size: 13px;
+            color: #475569;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .metric {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 24px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TicketUpdateView.perform_update()</h1>
+            <p class="subtitle">Analyse de Complexité - Flot de Contrôle Annoté</p>
+        </div>
+
+        <div class="code-wrapper">
+            <pre><code class="language-python">def perform_update(self, serializer):                              # Nœud 1
+    assigned_to_id = self.request.data.get("assigned_to") or \
+                     self.request.data.get("assigned_to_id")       # Nœud 2
+    mentioned_user_ids = self.request.data.get("mentioned_users", [])  # Nœud 3
+    
+    # Sauvegarde conditionnelle
+    ticket = (
+        serializer.save(assigned_to_id=assigned_to_id)             # Décision 1 ➜ CC+1
+        if assigned_to_id
+        else serializer.save()
+    )                                                               # Nœud 4
+    
+    ticket_link = f"/tickets/{ticket.id}"                           # Nœud 5
+    
+    # Récupération des mentions existantes
+    mentioned_users = set([m.mentioned_user for m in ticket.mentions.all()])  # Nœud 6
+    
+    # Ajout de nouvelles mentions
+    if mentioned_user_ids:                                          # Décision 2 ➜ CC+1
+        for uid in mentioned_user_ids:                              # Décision 3 ➜ CC+1
+            try:                                                    # Décision 4 ➜ CC+1
+                user = User.objects.get(id=uid)                     # Nœud 7
+                mentioned_users.add(user)                           # Nœud 8
+            except User.DoesNotExist:                               # Nœud 9
+                pass                                                # Nœud 10
+    
+    # Notification de tous les utilisateurs mentionnés
+    for user in mentioned_users:                                    # Décision 5 ➜ CC+1
+        if user != self.request.user:                               # Décision 6 ➜ CC+1
+            notify_user(user.id, ...)                               # Nœud 11
+    
+    # Notification de l'utilisateur assigné
+    if assigned_to_id:                                              # Décision 7 ➜ CC+1
+        try:                                                        # Décision 8 ➜ CC+1
+            assigned_user = User.objects.get(id=assigned_to_id)     # Nœud 12
+            if assigned_user != self.request.user:                  # Décision 9 ➜ CC+1
+                notify_user(assigned_user.id, ...)                  # Nœud 13
+        except User.DoesNotExist:                                   # Décision 10 ➜ CC+1
+            pass                                                    # Nœud 14
+    # Nœud 15 (Sortie)</code></pre>
+        </div>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-label">Nœuds</div>
+                <div class="metric-value">15</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Décisions</div>
+                <div class="metric-value">10</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Complexité Cyclomatique</div>
+                <div class="metric-value">11</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-icon node">N</div>
+                <div class="legend-text"><strong>Nœud:</strong> Bloc d'opération séquentielle (pas de branchement)</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon decision">D</div>
+                <div class="legend-text"><strong>Décision:</strong> Point de bifurcation (if, for, try), ajoute +1 à CC</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
